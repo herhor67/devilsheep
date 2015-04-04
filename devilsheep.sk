@@ -1,0 +1,80 @@
+options:
+	nazwa-owcy: &4&lOWCA TERRORYSTKA
+	nazwa-miecza: &CMIECZ TERRORYSTKI
+	minhp: 200
+	maxhp: 150
+ 
+on spawn of a sheep:
+	chance of 1%:
+		set {_zycie} to random integer between {@maxhp} and {@minhp}
+		set the name of last spawned entity to "_jeb"
+		set the max health of last spawned entity to {_zycie}
+		set {_golem} to last spawned entity
+		heal last spawned entity
+		apply speed 3 to last spawned entity for 999999999 days
+		apply jump boost 3 to last spawned entity for 99999999 days
+		spawn sheep at {_lokacja}
+		set the name of last spawned entity to "{@nazwa-owcy}"
+		set the max health of last spawned entity to {_zycie}
+		make last spawned entity ride {_golem}
+		heal last spawned entity
+
+every second:
+	loop all entities:
+		loop-entity is sheep:
+			name of loop-entity is "{@nazwa-owcy}":
+				shear loop-entity
+				wait 1 tick
+				unshear loop-entity
+				loop players in radius 7 of loop-entity:
+					chance of 20%:
+						strike lightning at loop-player
+				loop players in radius 3 of loop-entity:
+					damage loop-player by 3 hearts
+				chance of 20%:
+					push loop-entity upwards at speed 3
+
+on death of a sheep:
+	victim's vehicle is sheep:
+		kill victim's vehicle
+	kill victim's passenger
+	name of victim is "{@nazwa-owcy}":
+		drop diamond sword named "{@nazwa-miecza}" at location of victim
+
+on damage:
+	victim is sheep:
+		name of victim is "{@nazwa-owcy}" or "_jeb":
+			damage is caused by fall or lightning or fire or lava or drowning:
+				cancel event
+	attacker's tool is diamond sword named "{@nazwa-miecza}":
+		increase damage by 5
+
+command /owca [<text>]:
+	trigger:
+		arg is "autor":
+			send "&6-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+			send "&6Autorem skryptu jest &cHerhor67"
+			send "&cherhor67.tk &6oraz &cskript.pl"
+			send "&6-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+
+command /owcadmin [<text>]:
+	permission: devilsheep.admin
+	permission message: &cNie mozesz tego zrobic
+	trigger:
+		arg is "spawnuj":
+			set {_lokacja} to location of player
+			set {_zycie} to random integer between {@maxhp} and {@minhp}
+			spawn sheep at {_lokacja}
+			set the name of last spawned entity to "_jeb"
+			set the max health of last spawned entity to {_zycie}
+			set {_golem} to last spawned entity
+			apply speed 3 to last spawned entity for 999999999 days
+			apply jump boost 3 to last spawned entity for 99999999 days
+			heal last spawned entity
+			spawn sheep at {_lokacja}
+			set the name of last spawned entity to "{@nazwa-owcy}"
+			set the max health of last spawned entity to {_zycie}
+			make last spawned entity ride {_golem}
+			heal last spawned entity
+		arg is "odswiez":
+			execute player command "/sk reload %script%"
